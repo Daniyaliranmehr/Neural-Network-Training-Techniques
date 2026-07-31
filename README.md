@@ -91,3 +91,31 @@ The dataset was evaluated for potential data quality issues before further analy
 
 - All features are numerical (`int64`)
 - No categorical encoding is required.
+
+
+## 2. Exploratory Data Analysis (EDA)
+
+Comprehensive analysis of feature distributions, relationships, and data patterns to understand underlying structures in the dataset.
+
+### Feature 1 - Histogram
+
+<p align="center">
+  <img src="assets/feature_1_histogram.png" width="100%">
+</p>
+
+### Feature 1 - Boxplot
+
+<p align="center">
+  <img src="assets/feature_1_boxplot.png" width="100%">
+</p>
+
+>**Key Observations**
+>
+>**Asymmetrical Distribution (Skewness):**
+The histogram displays a right-skewed distribution featuring prominent density peaks around the values of **38** and **55**. From these high-frequency modes, the distribution extends into a long right tail. Because this pronounced positive skew can destabilize gradient-based optimizers during model training, a distribution transformation would be beneficial. Since the feature appears to contain strictly positive values, I recommend applying a **Log Transformation**. This approach is likely to normalize the distribution and stabilize the variance before the data is passed to my model.
+>
+>**Extreme Outlier Concentration:**
+The boxplot indicates a dense, continuous sequence of extreme outliers starting immediately beyond the upper bound defined by $1.5 \times IQR$ (approximately **80**) and reaching up to **125**. Rather than isolated measurement anomalies, these concentrated points align with the secondary clusters visible in the histogram. Therefore, they appear to represent valid observations that I need to preserve to avoid significant information loss.
+>
+>**Scaling Recommendation:**
+I recommend utilizing a **`RobustScaler`** for this feature. Because the data contains a heavy concentration of valid, extreme outliers, a mean-based approach like `StandardScaler` would be heavily distorted. `RobustScaler` relies on the median and the interquartile range (which sits tightly between **38** and **55**), meaning it is highly likely to scale the feature effectively without squashing the variance of my dominant baseline readings.
