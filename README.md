@@ -119,3 +119,27 @@ The boxplot indicates a dense, continuous sequence of extreme outliers starting 
 >
 >**Scaling Recommendation:**
 I recommend utilizing a **`RobustScaler`** for this feature. Because the data contains a heavy concentration of valid, extreme outliers, a mean-based approach like `StandardScaler` would be heavily distorted. `RobustScaler` relies on the median and the interquartile range (which sits tightly between **38** and **55**), meaning it is highly likely to scale the feature effectively without squashing the variance of my dominant baseline readings.
+
+
+### Feature 2 - Histogram
+
+<p align="center">
+  <img src="assets/feature_2_histogram.png" width="100%">
+</p>
+
+### Feature 2 - Boxplot
+
+<p align="center">
+  <img src="assets/feature_2_boxplot.png" width="100%">
+</p>
+
+>**Key Observations**
+>
+>**Asymmetrical Distribution (Skewness):**
+The histogram displays an extremely peaked, zero-centered distribution with values spanning into both negative and positive domains. The vast majority of sensor readings are concentrated exactly at zero, with the distribution extending into sparse, heavy tails in both directions. Because this feature contains zero and negative values, a Log Transformation cannot be evaluated. To normalize this heavily leptokurtic distribution and stabilize the variance, I recommend applying a **Yeo-Johnson Transformation**. This approach is a suitable candidate because it safely handles negative numbers and zeros while mitigating the impact of heavy tails on my model.
+>
+>**Extreme Outlier Concentration:**
+The boxplot indicates that the central box is entirely compressed at zero, suggesting the interquartile range (IQR) is extremely narrow or essentially zero. From this resting baseline, a sparse array of extreme outliers radiates symmetrically, extending down to approximately -4500 and up to 5000. Rather than isolated measurement errors, these extreme deviations are likely to represent valid, rare operational states that capture critical minority classes. 
+>
+>**Scaling Recommendation:**
+I recommend utilizing a **`RobustScaler`** for this feature, assuming the underlying implementation can manage a near-zero IQR. Because the data contains massive outliers relative to the dominant zero-cluster, mean-based approaches like `StandardScaler` or boundary-based methods like `MinMaxScaler` would be heavily distorted. `RobustScaler` appears to be the most suitable candidate to handle the extreme valid observations without squashing the variance of my dominant baseline readings.
