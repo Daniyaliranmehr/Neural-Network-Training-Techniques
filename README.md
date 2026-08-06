@@ -191,3 +191,27 @@ The boxplot illustrates that the central box (the interquartile range) is entire
 >
 >**Scaling Recommendation:**
 I recommend utilizing a **`RobustScaler`** for this feature, assuming my underlying implementation can properly manage a near-zero IQR. Because the data contains extreme outliers relative to the massive zero-cluster, mean-based approaches like `StandardScaler` would compute an artificially inflated standard deviation. `RobustScaler` appears to be the most suitable method to accommodate these valid extreme observations without severely squashing the variance of my normal baseline readings.
+
+
+### Feature 5 - Histogram
+
+<p align="center">
+  <img src="assets/feature_5_histogram.png" width="100%">
+</p>
+
+### Feature 5 - Boxplot
+
+<p align="center">
+  <img src="assets/feature_5_boxplot.png" width="100%">
+</p>
+
+>**Key Observations**
+>
+>**Asymmetrical Distribution (Skewness):**
+The histogram displays a left-skewed (negatively skewed) distribution, peaking sharply between the values of 40 and 60. From this dense central region, a prominent left tail extends well into negative territory. Because this pronounced asymmetry is likely to destabilize gradient-based optimizers during model training, a distribution transformation would be beneficial. Since the feature clearly contains negative values, a Log Transformation cannot be utilized. Instead, I recommend applying a **Yeo-Johnson Transformation**. This technique appears to be a suitable candidate to safely normalize the negatively skewed data and stabilize the variance before feeding it into my model.
+>
+>**Extreme Outlier Concentration:**
+The boxplot reveals a dense concentration of lower outliers extending continuously just below the lower bound (down to roughly -50), which aligns with the visible left tail in the histogram. These clustered points appear to represent valid, critical minority class observations. Additionally, there are a few highly isolated extreme outliers located far below the main cluster (down to approximately -190) and far above it (near 330 and 430). While the denser clusters are likely valid, these extreme isolated points might require further investigation to rule out potential measurement anomalies.
+>
+>**Scaling Recommendation:**
+I recommend utilizing a **`RobustScaler`** for this feature. The presence of extreme outliers on both ends of the distribution would heavily distort the mean and artificially inflate the standard deviation, making `StandardScaler` highly ineffective. `RobustScaler` relies on the median and the interquartile range (which cleanly captures the core baseline data between approximately 25 and 50), making it the most suitable candidate to scale the feature properly without squashing the variance of my normal readings.
