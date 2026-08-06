@@ -167,3 +167,27 @@ The boxplot reveals a dense, continuous cluster of upper outliers just beyond th
 >
 >**Scaling Recommendation:**
 I recommend utilizing a **`RobustScaler`** for this feature. The presence of both clustered and isolated extreme outliers would pull the mean and artificially inflate the standard deviation, meaning `StandardScaler` would be heavily distorted. By relying on the median and the interquartile range (which cleanly captures the central density between approximately 79 and 89), `RobustScaler` will allow me to scale the baseline data properly while preserving the critical extreme observations.
+
+
+### Feature 4 - Histogram
+
+<p align="center">
+  <img src="assets/feature_4_histogram.png" width="100%">
+</p>
+
+### Feature 4 - Boxplot
+
+<p align="center">
+  <img src="assets/feature_4_boxplot.png" width="100%">
+</p>
+
+>**Key Observations**
+>
+>**Asymmetrical Distribution (Skewness):**
+The histogram reveals a highly peaked, zero-centered distribution with values extending into both the negative and positive domains. The vast majority of observations are concentrated precisely at zero, creating a symmetrical but extremely leptokurtic shape characterized by heavy tails. Because this feature clearly contains zero and negative values, a Log Transformation cannot be utilized. Instead, I recommend applying a **Yeo-Johnson Transformation**. This technique appears to be a suitable candidate for safely handling the negative values while mitigating the impact of the heavy tails and stabilizing the variance before feeding the data into my model.
+>
+>**Extreme Outlier Concentration:**
+The boxplot illustrates that the central box (the interquartile range) is entirely compressed at zero. From this dominant baseline, a sparse array of extreme outliers radiates outward, reaching as low as approximately -4000 and as high as roughly 3900. These extreme deviations appear to be structurally consistent rather than random measurement errors, suggesting they are highly likely to represent valid, rare operational states that I need to retain for accurate minority class representation.
+>
+>**Scaling Recommendation:**
+I recommend utilizing a **`RobustScaler`** for this feature, assuming my underlying implementation can properly manage a near-zero IQR. Because the data contains extreme outliers relative to the massive zero-cluster, mean-based approaches like `StandardScaler` would compute an artificially inflated standard deviation. `RobustScaler` appears to be the most suitable method to accommodate these valid extreme observations without severely squashing the variance of my normal baseline readings.
