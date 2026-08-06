@@ -349,3 +349,17 @@ All features were already stored as integer (`int64`) values, so no data type co
 ### Summary
 
 The dataset was already clean, and no cleaning operations were necessary before feature engineering and model development.
+
+## 3. Dataset Preparation
+
+This stage includes separating features and target variables, splitting the data into training, validation, and test sets, applying the selected transformations and scaling techniques, and converting the processed data into a format suitable for neural network training.
+
+### Train / Validation / Test Split
+
+The dataset is divided into three subsets:
+
+- **Training Set (70%)**: Used for learning the model parameters.
+- **Validation Set (15%)**: Used for model selection, hyperparameter tuning, and comparing different training strategies.
+- **Test Set (15%)**: Used for the final evaluation of the trained model on unseen data.
+
+>The dataset is split before applying transformations and scaling techniques to prevent **data leakage**. Some preprocessing methods learn parameters from the data. For example, `RobustScaler` calculates the median and Interquartile Range (IQR) based on the provided data. If these calculations are performed using the entire dataset before splitting, information from the validation and test sets can influence the training process, leading to overly optimistic evaluation results.
