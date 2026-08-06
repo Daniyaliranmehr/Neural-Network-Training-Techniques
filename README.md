@@ -239,3 +239,27 @@ The boxplot indicates that the interquartile range is completely collapsed at ze
 >
 >**Scaling Recommendation:**
 I recommend using a **`RobustScaler`** for this feature, provided my implementation can properly handle a near-zero interquartile range. Because the outliers are so extreme in magnitude relative to the dense zero-centered baseline, `StandardScaler` would compute an artificially massive standard deviation. `RobustScaler` appears to be the most effective method to scale this feature without severely compressing the variance of my dominant baseline data.
+
+
+### Feature 7 - Histogram
+
+<p align="center">
+  <img src="assets/feature_7_histogram.png" width="100%">
+</p>
+
+### Feature 7 - Boxplot
+
+<p align="center">
+  <img src="assets/feature_7_boxplot.png" width="100%">
+</p>
+
+>**Key Observations**
+>
+>**Asymmetrical Distribution (Skewness):**
+The histogram displays a complex, multimodal distribution with a dominant density peak around 40 and secondary clusters near 0 and between 50 and 70. Because this structural asymmetry can destabilize gradient-based optimizers during model training, a distribution transformation would be beneficial. Since the boxplot confirms this feature contains zero and negative values (dropping as low as roughly -48), a Log Transformation cannot be utilized. Instead, I recommend applying a **Yeo-Johnson Transformation**. This technique appears to be a suitable candidate for safely managing the negative values while normalizing the multimodal distribution and stabilizing the variance for my model.
+>
+>**Extreme Outlier Concentration:**
+The boxplot indicates outliers on both ends of the main distribution. Upper outliers form a dense sequence from approximately 58 to 75, alongside an isolated extreme point near 105. Lower outliers are densely packed from the lower whisker down to 0, with several highly isolated points continuing down into the negative range (-10 to -48). The denser outlier clusters clearly align with the secondary peaks in the histogram, suggesting they represent valid minority class states. However, the isolated extreme points at both the absolute upper and lower bounds might require further investigation to rule out measurement anomalies.
+>
+>**Scaling Recommendation:**
+I recommend utilizing a **`RobustScaler`** for this feature. The presence of significant outliers on both ends of the data would heavily distort the mean and artificially inflate the standard deviation, rendering `StandardScaler` ineffective. By relying on the median and the interquartile range (which safely captures the core baseline readings between approximately 30 and 42), `RobustScaler` is highly likely to scale the feature properly without squashing the variance of my normal data.
