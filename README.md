@@ -263,3 +263,28 @@ The boxplot indicates outliers on both ends of the main distribution. Upper outl
 >
 >**Scaling Recommendation:**
 I recommend utilizing a **`RobustScaler`** for this feature. The presence of significant outliers on both ends of the data would heavily distort the mean and artificially inflate the standard deviation, rendering `StandardScaler` ineffective. By relying on the median and the interquartile range (which safely captures the core baseline readings between approximately 30 and 42), `RobustScaler` is highly likely to scale the feature properly without squashing the variance of my normal data.
+
+
+### Feature 8 - Histogram
+
+<p align="center">
+  <img src="assets/feature_8_histogram.png" width="100%">
+</p>
+
+### Feature 8 - Boxplot
+
+<p align="center">
+  <img src="assets/feature_8_boxplot.png" width="100%">
+</p>
+
+
+>**Key Observations**
+>
+>**Asymmetrical Distribution (Skewness):**
+The histogram illustrates a right-skewed distribution with its primary density heavily concentrated between 30 and 60. From this central peak, the data exhibits a noticeable right-leaning tail stretching toward 140. Because this asymmetry can impede the convergence of gradient-based optimizers, a distribution transformation would be beneficial. Although the histogram predominantly displays positive values, the boxplot confirms the presence of extreme negative observations (dropping as low as -350). Consequently, a Log Transformation cannot be utilized. Instead, I recommend applying a **Yeo-Johnson Transformation**. This technique appears to be a suitable candidate to safely manage the negative values while normalizing the skewness and stabilizing the variance before feeding the data into my model.
+>
+>**Extreme Outlier Concentration:**
+The boxplot displays a dense, continuous sequence of upper outliers starting just beyond the upper whisker (approximately 90) and continuing to 140, which aligns with the visible right tail in the histogram. These clustered points are highly likely to represent valid minority class observations. However, there are also highly isolated extreme outliers located far above the main cluster (up to roughly 280) and far below it in negative territory (near -260 and -350). While the dense upper cluster appears structurally consistent, these extremely isolated points might require further investigation to determine if they are rare but valid operational states or simply measurement anomalies.
+>
+>**Scaling Recommendation:**
+I recommend utilizing a **`RobustScaler`** for this feature. The presence of highly isolated extreme outliers on both ends of the distribution would severely distort the arithmetic mean and artificially inflate the standard deviation, rendering `StandardScaler` ineffective. By relying on the median and the interquartile range (which cleanly captures the core baseline data between approximately 35 and 60), `RobustScaler` is highly likely to scale the feature properly without squashing the variance of my normal baseline readings.
