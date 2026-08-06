@@ -330,7 +330,7 @@ I recommend utilizing a **`RobustScaler`** for this feature. The presence of ext
 | **Feature 9** | Right-Skewed (Dual-Tail) | Yeo-Johnson | `RobustScaler` | Stabilizes heavy zero-concentration tail while bypassing extreme outliers. |
 
 
-## 4. Data Cleaning
+## Data Cleaning
 
 The dataset was examined for potential data quality issues before preprocessing.
 
