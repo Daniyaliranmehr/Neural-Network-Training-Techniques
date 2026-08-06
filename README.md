@@ -313,3 +313,18 @@ The boxplot illustrates a dense sequence of upper outliers starting just beyond 
 >
 >**Scaling Recommendation:**
 I recommend utilizing a **`RobustScaler`** for this feature. The presence of extreme outliers on both ends of the distribution would heavily distort the arithmetic mean and artificially inflate the standard deviation, rendering `StandardScaler` ineffective. By relying on the median and the interquartile range (which tightly captures the core baseline density around zero), `RobustScaler` is highly likely to scale the feature properly without squashing the variance of my normal baseline readings.
+
+
+### Preprocessing Strategy Overview
+
+| Feature | Distribution Type | Recommended Transformation | Recommended Scaler | Key Rationale Summary |
+| :--- | :--- | :--- | :--- | :--- |
+| **Feature 1** | Right-Skewed (Positive) | Log Transformation | `RobustScaler` | Normalizes positive right tail; robust to dense valid upper outliers. |
+| **Feature 2** | Leptokurtic (Zero-Centered) | Yeo-Johnson | `RobustScaler` | Handles zero/negative values safely; protects against extreme scale distortion. |
+| **Feature 3** | Multimodal / Right-Skewed | Log Transformation | `RobustScaler` | Tames right-leaning tail; avoids standard deviation inflation from outliers. |
+| **Feature 4** | Leptokurtic (Zero-Centered) | Yeo-Johnson | `RobustScaler` | Safely handles negative/zero bounds; protects normal baseline variance. |
+| **Feature 5** | Left-Skewed (Negative Tail) | Yeo-Johnson | `RobustScaler` | Accommodates negative skewness; handles dual-tail extreme outliers. |
+| **Feature 6** | Leptokurtic (Massive Range) | Yeo-Johnson | `RobustScaler` | Manages extreme negative/positive spans; prevents mean distortion. |
+| **Feature 7** | Multimodal / Complex | Yeo-Johnson | `RobustScaler` | Handles multi-cluster structure and negative values effectively. |
+| **Feature 8** | Right-Skewed (Dual-Tail) | Yeo-Johnson | `RobustScaler` | Mitigates right skew with negative extremes; relies on robust IQR metrics. |
+| **Feature 9** | Right-Skewed (Dual-Tail) | Yeo-Johnson | `RobustScaler` | Stabilizes heavy zero-concentration tail while bypassing extreme outliers. |
