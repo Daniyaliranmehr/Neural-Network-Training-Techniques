@@ -328,3 +328,24 @@ I recommend utilizing a **`RobustScaler`** for this feature. The presence of ext
 | **Feature 7** | Multimodal / Complex | Yeo-Johnson | `RobustScaler` | Handles multi-cluster structure and negative values effectively. |
 | **Feature 8** | Right-Skewed (Dual-Tail) | Yeo-Johnson | `RobustScaler` | Mitigates right skew with negative extremes; relies on robust IQR metrics. |
 | **Feature 9** | Right-Skewed (Dual-Tail) | Yeo-Johnson | `RobustScaler` | Stabilizes heavy zero-concentration tail while bypassing extreme outliers. |
+
+
+## 4. Data Cleaning
+
+The dataset was examined for potential data quality issues before preprocessing.
+
+### Missing Values
+
+No missing values were detected in the dataset.
+
+### Duplicate Records
+
+No duplicate samples were found.
+
+### Data Types
+
+All features were already stored as integer (`int64`) values, so no data type conversion was required.
+
+### Summary
+
+The dataset was already clean, and no cleaning operations were necessary before feature engineering and model development.
