@@ -143,3 +143,27 @@ The boxplot indicates that the central box is entirely compressed at zero, sugge
 >
 >**Scaling Recommendation:**
 I recommend utilizing a **`RobustScaler`** for this feature, assuming the underlying implementation can manage a near-zero IQR. Because the data contains massive outliers relative to the dominant zero-cluster, mean-based approaches like `StandardScaler` or boundary-based methods like `MinMaxScaler` would be heavily distorted. `RobustScaler` appears to be the most suitable candidate to handle the extreme valid observations without squashing the variance of my dominant baseline readings.
+
+
+### Feature 3 - Histogram
+
+<p align="center">
+  <img src="assets/feature_3_histogram.png" width="100%">
+</p>
+
+### Feature 3 - Boxplot
+
+<p align="center">
+  <img src="assets/feature_3_boxplot.png" width="100%">
+</p>
+
+>**Key Observations**
+>
+>**Asymmetrical Distribution (Skewness):**
+The histogram displays a moderately right-skewed, multimodal distribution. The bulk of the readings are concentrated between **75** and **90**, with secondary density peaks stretching up toward 110. Because this positive skewness is likely to introduce instability into gradient-based optimizers, a distribution transformation would be beneficial. Since the feature appears to contain strictly positive values (with a minimum observation around 20), I recommend applying a **Log Transformation**. This approach is a suitable candidate to normalize the right-leaning tail and stabilize the variance before feeding the data into my model.
+>
+>**Extreme Outlier Concentration:**
+The boxplot reveals a dense, continuous cluster of upper outliers just beyond the $1.5 \times IQR$ upper bound (between **105** and **115**), which clearly aligns with the secondary peaks in the histogram. Therefore, these appear to represent valid, discrete minority states. However, there are also a few highly isolated extreme outliers located well above the main cluster (near **140** and **150**) and far below it (between **20** and **45**). While the concentrated cluster is highly likely to be valid data, these isolated extremes might require further investigation to rule out measurement anomalies. 
+>
+>**Scaling Recommendation:**
+I recommend utilizing a **`RobustScaler`** for this feature. The presence of both clustered and isolated extreme outliers would pull the mean and artificially inflate the standard deviation, meaning `StandardScaler` would be heavily distorted. By relying on the median and the interquartile range (which cleanly captures the central density between approximately 79 and 89), `RobustScaler` will allow me to scale the baseline data properly while preserving the critical extreme observations.
