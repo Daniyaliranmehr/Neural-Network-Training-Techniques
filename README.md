@@ -215,3 +215,27 @@ The boxplot reveals a dense concentration of lower outliers extending continuous
 >
 >**Scaling Recommendation:**
 I recommend utilizing a **`RobustScaler`** for this feature. The presence of extreme outliers on both ends of the distribution would heavily distort the mean and artificially inflate the standard deviation, making `StandardScaler` highly ineffective. `RobustScaler` relies on the median and the interquartile range (which cleanly captures the core baseline data between approximately 25 and 50), making it the most suitable candidate to scale the feature properly without squashing the variance of my normal readings.
+
+
+### Feature 6 - Histogram
+
+<p align="center">
+  <img src="assets/feature_6_histogram.png" width="100%">
+</p>
+
+### Feature 6 - Boxplot
+
+<p align="center">
+  <img src="assets/feature_6_boxplot.png" width="100%">
+</p>
+
+>**Key Observations**
+>
+>**Asymmetrical Distribution (Skewness):**
+The histogram shows a heavily leptokurtic distribution entirely concentrated around a central peak at zero. The data spans a massive range across both negative and positive values, indicating very heavy tails. Because this feature contains zero and negative values, a Log Transformation is mathematically invalid. I recommend applying a **Yeo-Johnson Transformation** instead. This technique would be a suitable candidate to safely manage the extreme range of negative and positive values, normalize the distribution, and stabilize the variance for my model.
+>
+>**Extreme Outlier Concentration:**
+The boxplot indicates that the interquartile range is completely collapsed at zero. Extending from this resting baseline is a sparse but extensive array of extreme outliers, reaching down to approximately -14,000 and up to 13,000. These extreme deviations do not appear to be random measurement noise but rather suggest highly distinct, rare operational states. Therefore, they are highly likely to represent valid minority class observations that I must retain to ensure accurate model performance.
+>
+>**Scaling Recommendation:**
+I recommend using a **`RobustScaler`** for this feature, provided my implementation can properly handle a near-zero interquartile range. Because the outliers are so extreme in magnitude relative to the dense zero-centered baseline, `StandardScaler` would compute an artificially massive standard deviation. `RobustScaler` appears to be the most effective method to scale this feature without severely compressing the variance of my dominant baseline data.
