@@ -363,3 +363,14 @@ The dataset is divided into three subsets:
 - **Test Set (15%)**: Used for the final evaluation of the trained model on unseen data.
 
 >The dataset is split before applying transformations and scaling techniques to prevent **data leakage**. Some preprocessing methods learn parameters from the data. For example, `RobustScaler` calculates the median and Interquartile Range (IQR) based on the provided data. If these calculations are performed using the entire dataset before splitting, information from the validation and test sets can influence the training process, leading to overly optimistic evaluation results.
+
+### Preprocessing Impact: Feature Transformation Example
+
+<p align="center">
+  <img src="assets/preparation_effect_example.png" width="100%">
+</p>
+
+The visualization above demonstrates the structural impact of the preprocessing pipeline, using **Feature 5** as an example. 
+
+* **Before Processing (Left):** The raw distribution exhibited a pronounced negative skew with a heavy left tail and wide-ranging variance. Leaving this unhandled can introduce severe numerical instability and destabilize gradient descent during model training.
+* **After Processing (Right):** By applying a **Yeo-Johnson transformation** paired with **Robust Scaling**, the distribution is successfully normalized and centered. The variance is now stabilized and compressed, ensuring optimal convergence for the deep learning pipeline while safely preserving the relative structural integrity of valid minority outliers.
