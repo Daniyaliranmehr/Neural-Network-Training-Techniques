@@ -38,7 +38,15 @@ The dataset contains nine numerical features representing shuttle sensor measure
 |:---:|:---:|
 | target | Class label representing the shuttle condition |
 
-The target variable contains multiple classes ranging from 1 to 7, making this a multiclass classification problem.
+The original Statlog Shuttle dataset represents the seven classes using labels 1–7. However, PyTorch's CrossEntropyLoss expects class labels to be zero-indexed, meaning that for seven classes the valid target values are 0–6.
+
+Since the model produces seven output logits indexed from 0 to 6, a target value of 7 would refer to an eighth output that does not exist, resulting in an IndexError: Target 7 is out of bounds.
+
+Therefore, the target labels are shifted by one during preprocessing:
+
+df["target"] = df["target"] - 1
+
+This converts the original labels from 1–7 to 0–6, making them compatible with CrossEntropyLoss.
 
 
 ### 1.2. Initial Statistical Insights
