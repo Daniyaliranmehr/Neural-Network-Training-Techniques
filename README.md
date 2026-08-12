@@ -6,7 +6,7 @@
 
 # File Descriptions
 
-# Data Analysis and Preparation
+# <h1 align="center">Data Analysis and Preparation</h1>
 
 ## 1. Data Understanding
 
@@ -382,3 +382,46 @@ The visualization above demonstrates the structural impact of the preprocessing 
 
 * **Before Processing (Left):** The raw distribution exhibited a pronounced negative skew with a heavy left tail and wide-ranging variance. Leaving this unhandled can introduce severe numerical instability and destabilize gradient descent during model training.
 * **After Processing (Right):** By applying a **Yeo-Johnson transformation** paired with **Robust Scaling**, the distribution is successfully normalized and centered. The variance is now stabilized and compressed, ensuring optimal convergence for the deep learning pipeline while safely preserving the relative structural integrity of valid minority outliers.
+
+
+# <h1 align="center">Training Techniques</h1>
+
+## Model Verification
+
+Before starting the full training process, it is useful to verify that both the forward and backward paths of the model are working correctly. These checks can detect implementation and configuration problems early, before spending time on a full training run.
+
+### Step 1: Check the Forward Path
+
+The first step is to pass a batch of data through the model before starting training.
+
+This helps verify that:
+
+- The data produced by the DataLoader has the expected shape and type.
+- The input dimensions of the model match the dimensions of the data.
+- The model produces outputs with the expected shape.
+- The outputs are compatible with the selected loss function and target labels.
+- The complete forward computation can be executed without errors.
+
+This check is useful because many problems, such as incorrect input dimensions, incompatible tensor shapes, or incorrect target/output configurations, can be detected before training begins.
+
+The initial loss can also be calculated at this stage. Although this value does not by itself indicate whether the model is performing well, it provides a useful baseline for observing how the loss changes during training.
+
+### Step 2: Check the Backward Path
+
+The second step is to verify that the model can actually learn from the data. A common approach is to select a very small subset of the training data, such as a few batches, and intentionally try to overfit the model on this subset.
+
+The purpose is to check whether the complete training loop is working correctly:
+
+- The loss can be backpropagated successfully.
+- Gradients are being computed correctly.
+- The optimizer is updating the model parameters.
+- The loss decreases when the model repeatedly sees the same small dataset.
+- The model and training configuration have enough capacity to fit the selected examples.
+
+If the model cannot significantly reduce the loss or achieve a very high performance on a small dataset after sufficient training, this is a warning sign that something may be wrong with the implementation or training configuration.
+
+Possible causes include incorrect gradients, an unsuitable learning rate, an inappropriate loss function, incorrect target labels, preprocessing problems, optimizer issues, or insufficient model capacity.
+
+Therefore, failure to overfit a small subset should not immediately be interpreted as a lack of model capacity. The purpose of this experiment is primarily to determine whether the model and training pipeline are capable of learning the data at all.
+
+Once the forward and backward paths have been verified, the model can be trained on the complete dataset with greater confidence.
