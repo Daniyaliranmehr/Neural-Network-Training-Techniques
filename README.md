@@ -425,3 +425,25 @@ Possible causes include incorrect gradients, an unsuitable learning rate, an ina
 Therefore, failure to overfit a small subset should not immediately be interpreted as a lack of model capacity. The purpose of this experiment is primarily to determine whether the model and training pipeline are capable of learning the data at all.
 
 Once the forward and backward paths have been verified, the model can be trained on the complete dataset with greater confidence.
+
+
+## Select the Best Learning Rate
+
+To select a suitable learning rate for the Shuttle classification model, several learning rates were tested using **SGD with a weight decay of `1e-4`**.
+
+The tested learning rates were `0.1`, `0.01`, `0.001`, and `0.0001`.
+
+The average initial loss was approximately **1.9**. Each configuration was trained for **5 epochs**, and the final loss was compared with the initial loss.
+
+| Learning Rate | Loss After 5 Epochs | Approx. Loss Change |
+|---:|---:|---:|
+| `0.1` | `0.6221` | `-1.2779` |
+| `0.01` | `1.7156` | `-0.1844` |
+| `0.001` | `1.8846` | `-0.0154` |
+| `0.0001` | `2.1018` | `+0.2018` |
+
+The learning rate **`0.1` performed best in this experiment**, reducing the loss from approximately **1.9 to 0.6221** after 5 epochs.
+
+The learning rate `0.01` also reduced the loss, but at a much slower rate. The learning rates `0.001` and `0.0001` resulted in very little progress within the 5-epoch training period.
+
+> **Note:** The exact loss values may vary between runs due to random model initialization and other sources of training stochasticity. The values above represent the results of this particular experiment.
