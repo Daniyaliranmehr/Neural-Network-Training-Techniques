@@ -427,7 +427,7 @@ Therefore, failure to overfit a small subset should not immediately be interpret
 Once the forward and backward paths have been verified, the model can be trained on the complete dataset with greater confidence.
 
 
-## Select the Best Learning Rate
+## Learning Rate Selection
 
 To select a suitable learning rate for the Shuttle classification model, several learning rates were tested using **SGD with a weight decay of `1e-4`**.
 
@@ -447,3 +447,62 @@ The learning rate **`0.1` performed best in this experiment**, achieving the hig
 The learning rate `0.01` also showed substantial improvement, but its final loss was higher and its accuracy was lower. The learning rates `0.001` and `0.0001` resulted in significantly poorer performance within the 5-epoch training period.
 
 > **Note:** The exact results may vary between runs due to random model initialization and other sources of training stochasticity. The values above represent the results of this particular experiment.
+
+
+## Small Grid
+
+After selecting `0.1` as the best learning rate in the **Learning Rate Selection** experiment, a small grid search was performed to investigate learning rates around and above `0.1`.
+
+Since `0.01` performed considerably worse than `0.1`, there was little reason to investigate values below `0.1`, such as `0.05`. Instead, the search focused on larger learning rates: `0.1`, `0.15`, `0.2`, and `0.25`.
+
+For each learning rate, four weight decay values were tested:
+
+- `0.0`
+- `1e-4`
+- `1e-5`
+- `1e-6`
+
+Each configuration was trained for **5 epochs** using SGD.
+
+### Results
+
+| Learning Rate | Weight Decay | Accuracy (%) | Loss |
+|---:|---:|---:|---:|
+| `0.1` | `0.0` | 43.8798 | 0.1475 |
+| `0.1` | `1e-4` | 40.9927 | 0.1391 |
+| `0.1` | `1e-5` | 42.1915 | 0.1146 |
+| `0.1` | `1e-6` | 41.7575 | 0.1365 |
+| `0.15` | `0.0` | 46.0910 | 0.0434 |
+| `0.15` | `1e-4` | 49.6471 | 0.0522 |
+| `0.15` | `1e-5` | 50.2640 | 0.3924 |
+| `0.15` | `1e-6` | 46.1376 | 0.0427 |
+| `0.2` | `0.0` | 41.2208 | 0.0822 |
+| `0.2` | `1e-4` | 42.6858 | 0.0383 |
+| `0.2` | `1e-5` | 44.1438 | 0.0726 |
+| `0.2` | `1e-6` | 41.8024 | 0.0804 |
+| `0.25` | `0.0` | 47.4075 | 0.0552 |
+| `0.25` | `1e-4` | 47.5922 | 0.0764 |
+| `0.25` | `1e-5` | 25.3123 | 0.4546 |
+| `0.25` | `1e-6` | 42.3518 | 0.1988 |
+
+### Analysis
+
+The results show that increasing the learning rate from `0.1` generally improved the final loss, but the behavior became less stable at higher learning rates.
+
+At **`LR=0.1`**, all four weight decay values produced similar results. The lowest loss was `0.1146` with `weight decay = 1e-5`, although the accuracy remained around `42%`.
+
+At **`LR=0.15`**, the model achieved substantially lower losses with `weight decay = 0.0` and `1e-6`, reaching `0.0434` and `0.0427`, respectively. However, `weight decay = 1e-5` produced a much higher loss of `0.3924` despite achieving the highest accuracy in the grid (`50.2640%`). This suggests that the final accuracy and loss do not always rank configurations in the same order.
+
+At **`LR=0.2`**, the lowest loss in the entire grid was obtained with `weight decay = 1e-4`, reaching `0.0383`. The other weight decay values also produced relatively low losses, making this learning rate reasonably stable across the tested weight decay values.
+
+At **`LR=0.25`**, the results became more unstable. In particular, `weight decay = 1e-5` produced a very high loss of `0.4546` and a significantly lower accuracy of `25.3123%`. This suggests that increasing the learning rate further can make training less stable for some weight decay values.
+
+Based on **final loss**, the best configuration in this experiment was:
+
+**Learning Rate = `0.2`**  
+**Weight Decay = `1e-4`**  
+**Final Loss = `0.0383`**
+
+This configuration achieved the lowest final loss among all tested combinations while maintaining reasonable accuracy (`42.6858%`).
+
+> **Note:** The results are based on a single 5-epoch run for each configuration. Since neural network training depends on random initialization and other sources of stochasticity, the exact values may vary between runs. The selected configuration should therefore be validated with a longer training run before being considered the final hyperparameter choice.
