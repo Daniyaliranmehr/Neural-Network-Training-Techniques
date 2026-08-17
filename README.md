@@ -431,19 +431,19 @@ Once the forward and backward paths have been verified, the model can be trained
 
 To select a suitable learning rate for the Shuttle classification model, several learning rates were tested using **SGD with a weight decay of `1e-4`**.
 
-The tested learning rates were `0.1`, `0.01`, `0.001`, and `0.0001`.
+The tested learning rates were `0.1`, `0.01`, `0.001`, and `0.0001`. Each configuration was trained for **5 epochs** using the training set.
 
-The average initial loss was approximately **1.9**. Each configuration was trained for **5 epochs**, and the final loss was compared with the initial loss.
+The results after 5 epochs were:
 
-| Learning Rate | Loss After 5 Epochs | Approx. Loss Change |
+| Learning Rate | Accuracy | Loss |
 |---:|---:|---:|
-| `0.1` | `0.6221` | `-1.2779` |
-| `0.01` | `1.7156` | `-0.1844` |
-| `0.001` | `1.8846` | `-0.0154` |
-| `0.0001` | `2.1018` | `+0.2018` |
+| `0.1` | `42.63%` | `0.0549` |
+| `0.01` | `39.09%` | `0.2371` |
+| `0.001` | `14.29%` | `1.1685` |
+| `0.0001` | `14.13%` | `1.8784` |
 
-The learning rate **`0.1` performed best in this experiment**, reducing the loss from approximately **1.9 to 0.6221** after 5 epochs.
+The learning rate **`0.1` performed best in this experiment**, achieving the highest accuracy (`42.63%`) and the lowest loss (`0.0549`) after 5 epochs.
 
-The learning rate `0.01` also reduced the loss, but at a much slower rate. The learning rates `0.001` and `0.0001` resulted in very little progress within the 5-epoch training period.
+The learning rate `0.01` also showed substantial improvement, but its final loss was higher and its accuracy was lower. The learning rates `0.001` and `0.0001` resulted in significantly poorer performance within the 5-epoch training period.
 
-> **Note:** The exact loss values may vary between runs due to random model initialization and other sources of training stochasticity. The values above represent the results of this particular experiment.
+> **Note:** The exact results may vary between runs due to random model initialization and other sources of training stochasticity. The values above represent the results of this particular experiment.
