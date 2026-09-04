@@ -546,7 +546,7 @@ I am currently investigating the training pipeline step by step, with particular
 
 # Debugging
 
-### 1. Dataset and Target Distribution Check
+### 1. Check Dataset and Target Distribution 
 
 The first debugging step was to verify the shapes, data types, target classes, and class distribution after the data preparation process.
 
@@ -578,3 +578,36 @@ This shows that class `0` is heavily overrepresented, while classes `1`, `2`, `5
 At this stage, this class imbalance has been identified as a potential issue, but it has **not yet been confirmed as the root cause** of the poor validation performance.
 
 The next step is to compare the class distributions across the training, validation, and test sets and continue investigating the data preparation pipeline.
+
+
+## Check Class Distribution Across Splits
+
+The second debugging step was to compare the class distribution across the **training, validation, and test sets** to determine whether the severe class imbalance was caused by the data splitting process.
+
+The results were:
+
+| Class | Train | Validation | Test |
+|---:|---:|---:|---:|
+| 0 | 23,875 | 5,116 | 5,117 |
+| 1 | 26 | 6 | 5 |
+| 2 | 92 | 20 | 20 |
+| 3 | 4,724 | 1,012 | 1,012 |
+| 4 | 1,721 | 368 | 369 |
+| 5 | 4 | 1 | 1 |
+| 6 | 8 | 1 | 1 |
+
+The class proportions are nearly identical across all three datasets. This indicates that the severe class imbalance was **not introduced by the train/validation/test split**.
+
+The imbalance was already present before the data was split, or it was introduced at an earlier stage of the data preparation process.
+
+However, another important observation was made during this investigation.
+
+Approximately **78.4% of the training samples belong to class 0**. Therefore, a simple classifier that predicts **class 0 for every sample** would achieve approximately **78.4% accuracy**.
+
+However, the neural network achieved only **14.29% validation accuracy**, which is approximately the same as the random-guessing baseline for a 7-class problem.
+
+This means that the model is performing significantly worse than a simple majority-class baseline. Therefore, although the severe class imbalance is an important issue that needs to be addressed, it **does not fully explain the extremely poor validation performance**.
+
+At this stage, the data splitting process does not appear to be the source of the problem.
+
+The next step is to inspect the actual feature values and target labels to determine whether an issue was introduced during preprocessing or tensor conversion.
