@@ -542,3 +542,39 @@ The current training results on the **Shuttle dataset** indicate a problem that 
 I am currently investigating the training pipeline step by step, with particular attention to **data preparation, preprocessing, target labels, data splitting, and evaluation**. The goal is to identify the root cause of this issue, fix it, and verify the results through further experiments.
 
 > **Note:** The current results are not considered final. This issue is being actively investigated and will be updated once the cause is identified and resolved.
+
+
+# Debugging
+
+### 1. Dataset and Target Distribution Check
+
+The first debugging step was to verify the shapes, data types, target classes, and class distribution after the data preparation process.
+
+The results were:
+
+| Dataset | Features | Samples |
+|---|---:|---:|
+| Training | 9 | 30,450 |
+| Validation | 9 | 6,525 |
+| Test | 9 | 6,525 |
+
+The target variable has the expected `torch.int64` data type and contains all **7 classes**:
+[0, 1, 2, 3, 4, 5, 6]
+
+However, the training target distribution revealed a **severe class imbalance**:
+
+| Class | Number of Samples |
+|---:|---:|
+| 0 | 23,875 |
+| 1 | 26 |
+| 2 | 92 |
+| 3 | 4,724 |
+| 4 | 1,721 |
+| 5 | 4 |
+| 6 | 8 |
+
+This shows that class `0` is heavily overrepresented, while classes `1`, `2`, `5`, and `6` have very few samples.
+
+At this stage, this class imbalance has been identified as a potential issue, but it has **not yet been confirmed as the root cause** of the poor validation performance.
+
+The next step is to compare the class distributions across the training, validation, and test sets and continue investigating the data preparation pipeline.
