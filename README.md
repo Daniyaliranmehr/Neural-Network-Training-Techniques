@@ -506,3 +506,34 @@ Based on **final loss**, the best configuration in this experiment was:
 This configuration achieved the lowest final loss among all tested combinations while maintaining reasonable accuracy (`42.6858%`).
 
 > **Note:** The results are based on a single 5-epoch run for each configuration. Since neural network training depends on random initialization and other sources of stochasticity, the exact values may vary between runs. The selected configuration should therefore be validated with a longer training run before being considered the final hyperparameter choice.
+
+
+# Train More Epochs
+
+The model was trained on the **Shuttle dataset** for **300 epochs**.
+
+## Training Results
+
+| Metric | Train | Validation |
+|---|---:|---:|
+| Loss | 0.0244 | 1.9006 |
+| Multiclass Accuracy | 47.82% | 14.29% |
+
+## Best Validation Results
+
+- **Best Validation Loss:** `0.6711` at **Epoch 108**
+- **Best Validation Accuracy:** `14.73%` at **Epoch 2**
+
+## Analysis
+
+The Shuttle dataset contains **7 classes**. If a model randomly guesses one of the 7 classes, its expected accuracy is:
+
+$$
+\frac{1}{7} \approx 14.29\%
+$$
+
+The model achieved **14.29% validation accuracy**, which is approximately the same as the random-guessing baseline.
+
+The model achieved a very low training loss of `0.0244`, while the validation loss increased to `1.9006`. This large gap between training and validation performance suggests that the model **does not generalize well to unseen data** and may be experiencing **overfitting**.
+
+> **Note:** These results are from a single training experiment. The model performs much better on the training data than on the validation data, indicating poor generalization.
