@@ -536,4 +536,9 @@ The model achieved **14.29% validation accuracy**, which is approximately the sa
 
 The model achieved a very low training loss of `0.0244`, while the validation loss increased to `1.9006`. This large gap between training and validation performance suggests that the model **does not generalize well to unseen data** and may be experiencing **overfitting**.
 
-> **Note:** These results are from a single training experiment. The model performs much better on the training data than on the validation data, indicating poor generalization.
+
+The current training results on the **Shuttle dataset** indicate a problem that needs further investigation. Although the model achieves a very low training loss, its validation performance remains close to the random-guessing baseline.
+
+I am currently investigating the training pipeline step by step, with particular attention to **data preparation, preprocessing, target labels, data splitting, and evaluation**. The goal is to identify the root cause of this issue, fix it, and verify the results through further experiments.
+
+> **Note:** The current results are not considered final. This issue is being actively investigated and will be updated once the cause is identified and resolved.
