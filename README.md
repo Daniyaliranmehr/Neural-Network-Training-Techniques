@@ -652,3 +652,68 @@ This raises a potential concern about extreme feature values in the processed da
 At this stage, it is not yet clear whether these extreme values are valid values from the original Shuttle dataset or whether they were introduced during the preprocessing process.
 
 The next step is to locate these extreme values and determine which features and samples contain them.
+
+
+#### 3.1. Locate Extreme Feature Values
+
+The next debugging step was to locate the exact positions of the minimum and maximum feature values in the processed training data.
+
+The results showed:
+
+| Statistic | Value | Feature | Target |
+|---|---:|---:|---:|
+| Minimum | -1412.6979 | Feature 6 | 0 |
+| Maximum | 1191.6857 | Feature 6 | 0 |
+
+Both extreme values were found in **Feature 6**.
+
+The samples containing these values were:
+
+- Minimum value: `-1412.6979`
+- Maximum value: `1191.6857`
+
+Both corresponding target labels were `0`.
+
+This confirms that the extreme minimum and maximum values are concentrated in **Feature 6**. However, their presence alone does not indicate an error in the preprocessing pipeline, since the original Shuttle dataset also contains features with large numerical ranges.
+
+Therefore, the next step is to analyze the distribution of extreme values across all features to determine whether these values are isolated or occur frequently.
+
+#### 3.2. Analyze Extreme Feature Values
+
+The next debugging step was to analyze the number of values outside the range `[-10, 10]` for each feature, as well as the minimum and maximum values of each feature.
+
+The number of values outside `[-10, 10]` was:
+
+| Feature | Values Outside `[-10, 10]` |
+|---|---:|
+| Feature 1 | 0 |
+| Feature 2 | 22 |
+| Feature 3 | 0 |
+| Feature 4 | 15 |
+| Feature 5 | 2 |
+| Feature 6 | 94 |
+| Feature 7 | 0 |
+| Feature 8 | 2 |
+| Feature 9 | 4 |
+
+In total, there were **139 values** outside the `[-10, 10]` range across the training data.
+
+The minimum and maximum values for each feature were:
+
+| Feature | Minimum | Maximum |
+|---|---:|---:|
+| Feature 1 | -1.3722 | 2.8070 |
+| Feature 2 | -54.9510 | 62.1196 |
+| Feature 3 | -8.7417 | 4.9228 |
+| Feature 4 | -99.3990 | 77.2091 |
+| Feature 5 | -4.1803 | 27.0241 |
+| Feature 6 | -1412.6979 | 1191.6857 |
+| Feature 7 | -4.3535 | 6.7615 |
+| Feature 8 | -20.4900 | 9.3944 |
+| Feature 9 | -87.7140 | 10.7541 |
+
+Feature 6 contains the largest numerical range, with values from approximately `-1412.70` to `1191.69`. It also contains the largest number of values outside the `[-10, 10]` range, with **94 values**.
+
+However, the total number of extreme values is relatively small compared with the total number of feature values in the training set.
+
+Therefore, the extreme values do not currently appear to be sufficient to explain the poor validation performance of the model. Further investigation should focus on the data preprocessing and training pipeline.
