@@ -580,7 +580,7 @@ At this stage, this class imbalance has been identified as a potential issue, bu
 The next step is to compare the class distributions across the training, validation, and test sets and continue investigating the data preparation pipeline.
 
 
-## Check Class Distribution Across Splits
+### 2. Check Class Distribution Across Splits
 
 The second debugging step was to compare the class distribution across the **training, validation, and test sets** to determine whether the severe class imbalance was caused by the data splitting process.
 
@@ -611,3 +611,44 @@ This means that the model is performing significantly worse than a simple majori
 At this stage, the data splitting process does not appear to be the source of the problem.
 
 The next step is to inspect the actual feature values and target labels to determine whether an issue was introduced during preprocessing or tensor conversion.
+
+### 3. Check Feature Values and Target Labels
+
+The third debugging step was to inspect the actual feature values and target labels after the data preparation and tensor conversion process.
+
+The shapes of the training data were:
+
+| Dataset | Features | Samples |
+|---|---:|---:|
+| Training | 9 | 30,450 |
+
+The target variable has the expected `torch.int64` data type and contains all **7 classes**:
+
+`[0, 1, 2, 3, 4, 5, 6]`
+
+The target statistics were:
+
+| Statistic | Value |
+|---|---:|
+| Minimum | 0 |
+| Maximum | 6 |
+| Unique Classes | 0, 1, 2, 3, 4, 5, 6 |
+
+This confirms that the target labels are correctly represented as integers from `0` to `6`, which is the expected format for a 7-class classification problem using `CrossEntropyLoss`.
+
+The feature statistics were:
+
+| Statistic | Value |
+|---|---:|
+| Minimum | -1412.6979 |
+| Maximum | 1191.6857 |
+| Mean | 0.1068 |
+| Standard Deviation | 5.4973 |
+
+The mean and standard deviation do not immediately indicate a clear problem. However, the minimum and maximum values are significantly larger in magnitude than most of the values observed in the inspected samples.
+
+This raises a potential concern about extreme feature values in the processed data.
+
+At this stage, it is not yet clear whether these extreme values are valid values from the original Shuttle dataset or whether they were introduced during the preprocessing process.
+
+The next step is to locate these extreme values and determine which features and samples contain them.
