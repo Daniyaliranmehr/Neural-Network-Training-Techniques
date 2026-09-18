@@ -717,3 +717,62 @@ Feature 6 contains the largest numerical range, with values from approximately `
 However, the total number of extreme values is relatively small compared with the total number of feature values in the training set.
 
 Therefore, the extreme values do not currently appear to be sufficient to explain the poor validation performance of the model. Further investigation should focus on the data preprocessing and training pipeline.
+
+
+### 4. Inspect Data Preprocessing Pipeline
+
+After confirming that the data handling in `02_training_techniques.ipynb` was not the source of the problem, I inspected the preprocessing pipeline in `01_data_preparation.ipynb`.
+
+During this investigation, I found an error in the final scaling step. The validation set was being transformed **twice**, while the test set was **not transformed at all**.
+
+The incorrect code was:
+
+    scaler = RobustScaler()
+
+    X_train_final = scaler.fit_transform(X_train_final)
+
+    X_valid_final = scaler.transform(X_valid_final)
+
+    X_valid_final = scaler.transform(X_valid_final)
+
+The validation set should only be transformed once using the scaler fitted on the training set. The test set should also be transformed using the same scaler.
+
+Therefore, I corrected the code to:
+
+    scaler = RobustScaler()
+
+    X_train_final = scaler.fit_transform(X_train_final)
+
+    X_valid_final = scaler.transform(X_valid_final)
+
+    X_test_final = scaler.transform(X_test_final)
+
+This ensures that the same scaler fitted on the training data is consistently applied to the training, validation, and test sets.
+
+The corrected preprocessing pipeline will now be used for the next training experiment to determine whether this error was responsible for the poor validation performance.
+
+
+### 5. Retrain After Fixing the Preprocessing Pipeline
+
+After correcting the preprocessing pipeline, I retrained the model using the same training configuration as before.
+
+The new results were:
+
+| Metric | Result |
+|---|---:|
+| Train Loss | 0.0073 |
+| Validation Loss | 0.0093 |
+| Best Validation Loss | 0.0054 (Epoch 127) |
+| Train Accuracy | 70.19% |
+| Validation Accuracy | 63.38% |
+| Best Validation Accuracy | 66.46% (Epoch 246) |
+
+Compared with the previous training results, the model's validation performance improved significantly.
+
+Previously, the model achieved only **14.29% validation accuracy**, which was approximately the random-guessing baseline for a 7-class classification problem. The validation loss also reached **1.9006**.
+
+After fixing the preprocessing pipeline, the validation accuracy increased to **63.38%**, with a best validation accuracy of **66.46%**. The validation loss also decreased substantially, from **1.9006** to **0.0093**, with a best validation loss of **0.0054**.
+
+This large improvement occurred after fixing an error in the preprocessing pipeline where the validation set was transformed twice and the test set was not transformed.
+
+This confirms that the preprocessing error had a major impact on the model's validation performance.
