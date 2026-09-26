@@ -776,3 +776,13 @@ After fixing the preprocessing pipeline, the validation accuracy increased to **
 This large improvement occurred after fixing an error in the preprocessing pipeline where the validation set was transformed twice and the test set was not transformed.
 
 This confirms that the preprocessing error had a major impact on the model's validation performance.
+
+
+# Test
+
+After testing the model on the test data, the loss and metric values are as follows:
+
+* **Metric:** 0.1429
+* **Loss:** 2.1574
+
+These results indicate that the model performs poorly on unseen data. Therefore, a new debugging step should be started to investigate the cause of this poor performance.
